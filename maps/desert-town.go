@@ -1,5 +1,9 @@
 package maps
 
+import (
+	"map-generators/geometry"
+)
+
 /*
 ## three buildings
 xxx xxxxx
@@ -23,18 +27,32 @@ x x xxxxx
 x-x
 */
 
-func GenerateDesertTown() []MapThing {
-	var town []MapThing
+func NewTownGenerator(random *SaneRandomGenerator) *TownGenerator {
+	return &TownGenerator{
+		random: random,
+	}
 }
 
-func addBuildingToTown(town []MapThing) []MapThing {
-	room := getRoom()
-	if len(town) == 0 {
+type TownGenerator struct {
+	random *SaneRandomGenerator
+}
+
+func (town *TownGenerator) Generate() []MapThing {
+	var things []MapThing
+}
+
+func (town *TownGenerator) addBuildingToTown(things []MapThing) []MapThing {
+	room := town.getRoom()
+	if len(things) == 0 {
 		return []MapThing{room}
 	}
-
 }
 
-func getRoom() MapThing {}
+func (town *TownGenerator) getRoom(minSize, maxSize int) geometry.AxisAlignedBoundingBox {
+	return geometry.AxisAlignedBoundingBox{
+		Width:  town.random.Int(minSize, maxSize),
+		Height: town.random.Int(minSize, maxSize),
+	}
+}
 
 type MapThing interface{}
