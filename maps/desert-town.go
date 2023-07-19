@@ -119,10 +119,17 @@ func (town *TownGenerator) prepBuildingForNorthSide(building *SquareRoom) {
 		eastWests = append(eastWests, townBuilding.walls.TopLeft.X, bottomRight.X)
 	}
 
-	sort.Ints(widths)
 	westest, eastest := geometry.MinMax(eastWests...)
 	westest = westest - building.walls.Width + 1
 	eastest = eastest + building.walls.Width - 1
+
+	sort.Ints(widths)
+	widest := widths[len(widths)-1]
+	if building.walls.Width > widest {
+		mid := (eastest + westest) / 2
+		building.walls.TopLeft.X = mid - (building.walls.Width / 2)
+		return
+	}
 }
 
 func (town *TownGenerator) prepBuildingForSouthSide(building *SquareRoom) {
