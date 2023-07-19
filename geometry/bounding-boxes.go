@@ -52,7 +52,14 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		return nil, errors.Join(errors.New("can't compute intersection with bad bottom-right"), err)
 	}
 
-	if (box.TopLeft.X == other.TopLeft.X && box.TopLeft.Y == other.TopLeft.Y) &&
+	// boxes are completely outside of each other
+	if boxBR.X < other.TopLeft.X || box.TopLeft.X > otherBR.X ||
+		boxBR.Y < other.TopLeft.Y || box.TopLeft.Y > otherBR.Y {
+		return nil, nil
+	}
+
+	// boxes are equal
+	if ((box.TopLeft.X == other.TopLeft.X) && (box.TopLeft.Y == other.TopLeft.Y)) &&
 		((boxBR.X == otherBR.X) && (boxBR.Y == otherBR.Y)) {
 		return []*Point{
 			box.TopLeft,
