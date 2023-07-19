@@ -47,7 +47,14 @@ type TownGenerator struct {
 }
 
 func (town *TownGenerator) Generate() []MapThing {
+	numBuildings := town.random.Int(town.minBuildings, town.maxBuildings)
+	for i := 0; i < numBuildings; i++ {
+		town.addBuilding()
+	}
 	var things []MapThing
+	for _, room := range town.buildings {
+		things = append(things, MapThing(room))
+	}
 	return things
 }
 
