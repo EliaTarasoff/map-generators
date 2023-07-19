@@ -54,96 +54,56 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		return nil, errors.Join(errors.New("can't compute intersection with bad bottom-right"), err)
 	}
 
-	// boxes are completely outside of each other
-	if boxBR.X < other.TopLeft.X || box.TopLeft.X > otherBR.X ||
-		boxBR.Y < other.TopLeft.Y || box.TopLeft.Y > otherBR.Y {
+	xTouches := lineTouchLine(box.TopLeft.X, boxBR.X, other.TopLeft.X, otherBR.X)
+	yTouches := lineTouchLine(box.TopLeft.Y, boxBR.Y, other.TopLeft.Y, otherBR.Y)
+
+	// totally outside
+	if len(xTouches) == 0 || len(yTouches) == 0 {
 		return nil, nil
 	}
 
-	// totally overlapping (equal) boxes
-	if ((box.TopLeft.X == other.TopLeft.X) && (box.TopLeft.Y == other.TopLeft.Y)) &&
-		((boxBR.X == otherBR.X) && (boxBR.Y == otherBR.Y)) {
-		return []*Point{
-			box.TopLeft,
-			boxBR,
-		}, nil
+	// broken line-intersection...
+	if len(xTouches) > 2 || len(yTouches) > 2 {
+		return nil, errors.New("somehow got more than two points describing line-intersections")
 	}
 
-	// equal width
-	if (box.TopLeft.X == other.TopLeft.X) && (boxBR.X == otherBR.X) {
-		// overlap one edge
-		overlap := []*Point{
-			{
-				X: box.TopLeft.X,
-			},
-			{
-				X: boxBR.X,
-			},
-		}
-		if box.TopLeft.Y == otherBR.Y {
-			overlap[0].Y = box.TopLeft.Y
-			overlap[1].Y = box.TopLeft.Y
-			return overlap, nil
-		}
-		if boxBR.Y == other.TopLeft.Y {
-			overlap[0].Y = boxBR.Y
-			overlap[1].Y = boxBR.Y
-			return overlap, nil
-		}
-
-		all := []int{box.TopLeft.Y, boxBR.Y, other.TopLeft.Y, otherBR.Y}
-		top := min(all...)
-		bottom := max(all...)
+	// only touching on one side
+	if len(xTouches) == 1 {
 		return []*Point{
 			{
-				X: box.TopLeft.X,
-				Y: top,
+				X: xTouches[0],
+				Y: yTouches[0],
 			},
 			{
-				X: boxBR.X,
-				Y: bottom,
+				X: xTouches[0],
+				Y: yTouches[1],
+			},
+		}, nil
+	}
+	if len(yTouches) == 1 {
+		return []*Point{
+			{
+				X: xTouches[0],
+				Y: yTouches[0],
+			},
+			{
+				X: xTouches[1],
+				Y: yTouches[0],
 			},
 		}, nil
 	}
 
-	// equal height
-	if (box.TopLeft.Y == other.TopLeft.Y) && (boxBR.Y == otherBR.Y) {
-		// overlap one edge
-		overlap := []*Point{
-			{
-				Y: box.TopLeft.Y,
-			},
-			{
-				Y: boxBR.Y,
-			},
-		}
-		if box.TopLeft.X == otherBR.X {
-			overlap[0].X = box.TopLeft.X
-			overlap[1].X = box.TopLeft.X
-			return overlap, nil
-		}
-		if boxBR.X == other.TopLeft.X {
-			overlap[0].X = boxBR.X
-			overlap[1].X = boxBR.X
-			return overlap, nil
-		}
-
-		all := []int{box.TopLeft.X, boxBR.X, other.TopLeft.X, otherBR.X}
-		left := min(all...)
-		right := max(all...)
-		return []*Point{
-			{
-				X: left,
-				Y: box.TopLeft.Y,
-			},
-			{
-				X: right,
-				Y: boxBR.Y,
-			},
-		}, nil
-	}
-
-	return nil, errors.New("some box-intersection wasn't implemented")
+	// messy rectangle intersection...
+	return []*Point{
+		{
+			X: xTouches[0],
+			Y: yTouches[0],
+		},
+		{
+			X: xTouches[1],
+			Y: yTouches[1],
+		},
+	}, nil
 }
 
 func lineTouchLine(a1, a2, b1, b2 int) []int {
@@ -166,11 +126,17 @@ func lineTouchLine(a1, a2, b1, b2 int) []int {
 		return []int{leftA, rightA}
 	}
 
-	// messy overlaps
 	leftATouchB := pointTouchLine(leftA, leftB, rightB)
 	rightATouchB := pointTouchLine(rightA, leftB, rightB)
 	all := append(leftATouchB, rightATouchB...)
 	sort.Ints(all)
+
+	// they're *just* touching...
+	if all[0] == all[1] {
+		return []int{all[0]}
+	}
+
+	// one line is smaller and inside, or they're each partially touching
 	return all
 }
 
