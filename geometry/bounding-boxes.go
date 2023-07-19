@@ -78,17 +78,9 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 			return , nil
 		}
 
-		top := math.MaxInt
-		bottom := -(math.MaxInt - 1)
 		all := []int{box.TopLeft.Y, boxBR.Y, other.TopLeft.Y, otherBR.Y}
-		for _, num := range all {
-			if num < top {
-				top = num
-			}
-			if num > bottom {
-				bottom = num
-			}
-		}
+		top := min(all...)
+		bottom := max(all...)
 		return []*Point{
 			{
 				X: box.TopLeft.X,
@@ -111,17 +103,9 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 			return , nil
 		}
 
-		left := math.MaxInt
-		right := -(math.MaxInt - 1)
 		all := []int{box.TopLeft.X, boxBR.X, other.TopLeft.X, otherBR.X}
-		for _, num := range all {
-			if num < left {
-				left = num
-			}
-			if num > right {
-				right = num
-			}
-		}
+		left := min(all...)
+		right := max(all...)
 		return []*Point{
 			{
 				X: left,
@@ -140,4 +124,24 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 type Point struct {
 	X int
 	Y int
+}
+
+func min(nums ...int) int {
+	small := math.MaxInt
+	for _, num := range nums {
+		if num < small {
+			small = num
+		}
+	}
+	return small
+}
+
+func max(nums ...int) int {
+	big := -(math.MaxInt - 1)
+	for _, num := range nums {
+		if num > big {
+			big = num
+		}
+	}
+	return big
 }
