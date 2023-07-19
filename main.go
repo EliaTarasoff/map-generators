@@ -7,7 +7,8 @@ func main() {
 }
 
 /*
-e.g. two rooms
+## Dungeon
+### two rooms
 xxx
 x x    xxx
 x |====| x
@@ -15,7 +16,7 @@ xxx    x x
        x x
        xxx
 
-e.g. one big room and two small ones
+### one big room and two small ones
 xxxxxx xxx
 x    |=| x
 x    x xxx
@@ -24,11 +25,34 @@ x    |==|  x
 x    x  xxxx
 xxxxxx
 
-e.g. two rooms sharing a wall (part-way)
+### two rooms sharing a wall (part-way)
 xxxx
 x  x
 x  |
 xxxxxx
 x    |
 xxxxxx
+
+
+## Desert Town
+### three buildings
+xxx xxxxx
+x | |   x
+xxx x   x
+    x   x
+xxx x   x
+x x xxxxx
+x-x
+
+### buildings with plants in between
+xxx xxxxx
+x | |   x
+xxx x   x
+    x   x
+ppp x   x
+ppp x   x
+    x   x
+xxx x   x
+x x xxxxx
+x-x
 */
