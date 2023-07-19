@@ -12,7 +12,7 @@ type AxisAlignedBoundingBox struct {
 	Height  int
 }
 
-func (box *AxisAlignedBoundingBox) sizeIsValid() bool {
+func (box *AxisAlignedBoundingBox) SizeIsValid() bool {
 	if box == nil {
 		return false
 	}
@@ -25,7 +25,7 @@ func (box *AxisAlignedBoundingBox) BottomRight() (*Point, error) {
 		return nil, errors.New("can't compute bottom-right corner on nulls")
 	}
 
-	if !box.sizeIsValid() {
+	if !box.SizeIsValid() {
 		return nil, errors.New("can't compute bottom-right with a negative size")
 	}
 
@@ -40,7 +40,7 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		return nil, errors.New("can't do intersection on a null shape")
 	}
 
-	if !box.sizeIsValid() || !other.sizeIsValid() {
+	if !box.SizeIsValid() || !other.SizeIsValid() {
 		return nil, errors.New("can't do intersection on shapes with negative size")
 	}
 
@@ -107,8 +107,8 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 }
 
 func lineTouchLine(a1, a2, b1, b2 int) []int {
-	smallA, bigA := minMax(a1, a2)
-	smallB, bigB := minMax(b1, b2)
+	smallA, bigA := MinMax(a1, a2)
+	smallB, bigB := MinMax(b1, b2)
 
 	// totally outside
 	if bigA < smallB || smallA > bigB {
@@ -135,7 +135,7 @@ func lineTouchLine(a1, a2, b1, b2 int) []int {
 }
 
 func pointTouchLine(a, b1, b2 int) []int {
-	leftB, rightB := minMax(b1, b2)
+	leftB, rightB := MinMax(b1, b2)
 
 	if a < leftB || a > rightB {
 		return nil
@@ -154,7 +154,11 @@ type Point struct {
 	Y int
 }
 
-func minMax(nums ...int) (min, max int) {
+func MinMax(nums ...int) (min, max int) {
+	if len(nums) < 1 {
+		return 0, 0
+	}
+
 	min = math.MaxInt
 	max = -(math.MaxInt - 1)
 	for _, num := range nums {

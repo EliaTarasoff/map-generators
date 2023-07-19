@@ -1,6 +1,9 @@
 package maps
 
 import (
+	"log"
+	"sort"
+
 	"map-generators/geometry"
 )
 
@@ -74,6 +77,15 @@ func (town *TownGenerator) addBuilding() {
 }
 
 func (town *TownGenerator) putBuildingOnSide(building *SquareRoom, s side) {
+	if building == nil {
+		log.Fatalf("putBuildingOnSide() can't use a null building")
+		return
+	}
+	if !building.walls.SizeIsValid() {
+		log.Fatalf("putBuildingOnSide() building has invalid size")
+		return
+	}
+
 	if s == north {
 		town.prepBuildingForNorthSide(building)
 	}
@@ -90,6 +102,27 @@ func (town *TownGenerator) putBuildingOnSide(building *SquareRoom, s side) {
 }
 
 func (town *TownGenerator) prepBuildingForNorthSide(building *SquareRoom) {
+	var widths []int
+	var eastWests []int
+
+	if len(town.buildings) < 1 {
+		return
+	}
+
+	for _, townBuilding := range town.buildings {
+		widths = append(widths, townBuilding.walls.Width)
+		bottomRight, err := townBuilding.walls.BottomRight()
+		if err != nil {
+			log.Fatalf("prepBuildingForNorthSide() failed: %s", err.Error())
+			return
+		}
+		eastWests = append(eastWests, townBuilding.walls.TopLeft.X, bottomRight.X)
+	}
+
+	sort.Ints(widths)
+	westest, eastest := geometry.MinMax(eastWests...)
+	westest = westest - building.walls.Width + 1
+	eastest = eastest + building.walls.Width - 1
 }
 
 func (town *TownGenerator) prepBuildingForSouthSide(building *SquareRoom) {
