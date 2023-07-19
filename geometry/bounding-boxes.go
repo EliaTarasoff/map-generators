@@ -142,7 +142,51 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		}, nil
 	}
 
-	return nil, errors.New("UNIMPLEMENTED")
+	return nil, errors.New("some box-intersection wasn't implemented")
+}
+
+func lineTouchLine(a1, a2, b1, b2 int) []int {
+	leftA, rightA := a1, a2
+	if a2 < a1 {
+		leftA, rightA = a2, a1
+	}
+	leftB, rightB := b1, b2
+	if b2 < b1 {
+		leftB, rightB = b2, b1
+	}
+
+	// totally outside
+	if rightA < leftB || leftA > rightB {
+		return nil
+	}
+
+	// total overlap
+	if leftA == leftB && rightA == rightB {
+		return []int{leftA, rightA}
+	}
+
+	// messy overlaps
+	leftATouchB := pointTouchLine(leftA, leftB, rightB)
+	rightATouchB := pointTouchLine(rightA, leftB, rightB)
+	return append(leftATouchB, rightATouchB...)
+}
+
+func pointTouchLine(a, b1, b2 int) []int {
+	leftB, rightB := b1, b2
+	if b2 < b1 {
+		leftB, rightB = b2, b1
+	}
+
+	if a < leftB || a > rightB {
+		return nil
+	}
+	if a == leftB {
+		return []int{leftB}
+	}
+	if a == rightB {
+		return []int{rightB}
+	}
+	return []int{a}
 }
 
 type Point struct {
