@@ -39,20 +39,32 @@ type TownGenerator struct {
 
 func (town *TownGenerator) Generate() []MapThing {
 	var things []MapThing
+	return things
 }
 
 func (town *TownGenerator) addBuildingToTown(things []MapThing) []MapThing {
-	room := town.getRoom()
-	if len(things) == 0 {
-		return []MapThing{room}
+	room := town.getRoom(3, 10)
+	return append(things, room)
+}
+
+func (town *TownGenerator) getRoom(minSize, maxSize int) *SquareRoom {
+	return &SquareRoom{
+		walls: &geometry.AxisAlignedBoundingBox{
+			Width:  town.random.Int(minSize, maxSize),
+			Height: town.random.Int(minSize, maxSize),
+		},
 	}
 }
 
-func (town *TownGenerator) getRoom(minSize, maxSize int) geometry.AxisAlignedBoundingBox {
-	return geometry.AxisAlignedBoundingBox{
-		Width:  town.random.Int(minSize, maxSize),
-		Height: town.random.Int(minSize, maxSize),
-	}
+type MapThing interface {
+	ToString() string
 }
 
-type MapThing interface{}
+type SquareRoom struct {
+	walls *geometry.AxisAlignedBoundingBox
+	doors []*geometry.Point
+}
+
+func (room *SquareRoom) ToString() string {
+	return "TODO"
+}
