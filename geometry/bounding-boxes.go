@@ -93,7 +93,7 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		}, nil
 	}
 
-	// messy rectangle intersection...
+	// overlapping on corner-chunks, or side-chunks
 	return []*Point{
 		{
 			X: xTouches[0],
