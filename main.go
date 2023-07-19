@@ -33,6 +33,17 @@ xxxxxx
 x    |
 xxxxxx
 
+### secret doors
+xxxxxxxxx
+x       |
+x-xxxsxxx
+ |  x x
+ |  x x
+x-xxxsxxxxx
+x         x
+x         x
+xxxxxxxxxxx
+
 
 ## Desert Town
 ### three buildings
