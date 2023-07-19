@@ -71,11 +71,23 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 	// equal width
 	if (box.TopLeft.X == other.TopLeft.X) && (boxBR.X == otherBR.X) {
 		// overlap one edge
+		overlap := []*Point{
+			{
+				X: box.TopLeft.X,
+			},
+			{
+				X: boxBR.X,
+			},
+		}
 		if box.TopLeft.Y == otherBR.Y {
-			return , nil
+			overlap[0].Y = box.TopLeft.Y
+			overlap[1].Y = box.TopLeft.Y
+			return overlap, nil
 		}
 		if boxBR.Y == other.TopLeft.Y {
-			return , nil
+			overlap[0].Y = boxBR.Y
+			overlap[1].Y = boxBR.Y
+			return overlap, nil
 		}
 
 		all := []int{box.TopLeft.Y, boxBR.Y, other.TopLeft.Y, otherBR.Y}
@@ -96,11 +108,23 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 	// equal height
 	if (box.TopLeft.Y == other.TopLeft.Y) && (boxBR.Y == otherBR.Y) {
 		// overlap one edge
+		overlap := []*Point{
+			{
+				Y: box.TopLeft.Y,
+			},
+			{
+				Y: boxBR.Y,
+			},
+		}
 		if box.TopLeft.X == otherBR.X {
-			return , nil
+			overlap[0].X = box.TopLeft.X
+			overlap[1].X = box.TopLeft.X
+			return overlap, nil
 		}
 		if boxBR.X == other.TopLeft.X {
-			return , nil
+			overlap[0].X = boxBR.X
+			overlap[1].X = boxBR.X
+			return overlap, nil
 		}
 
 		all := []int{box.TopLeft.X, boxBR.X, other.TopLeft.X, otherBR.X}
