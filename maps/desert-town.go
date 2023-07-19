@@ -27,14 +27,23 @@ x x xxxxx
 x-x
 */
 
-func NewTownGenerator(random *SaneRandomGenerator) *TownGenerator {
+func NewTownGenerator(random *SaneRandomGenerator, minBuildings, maxBuildings, minBuildingSize, maxBuildingSize int) *TownGenerator {
 	return &TownGenerator{
-		random: random,
+		random:          random,
+		minBuildings:    minBuildings,
+		maxBuildings:    maxBuildings,
+		minBuildingSize: minBuildingSize,
+		maxBuildingSize: maxBuildingSize,
 	}
 }
 
 type TownGenerator struct {
-	random *SaneRandomGenerator
+	random          *SaneRandomGenerator
+	minBuildings    int
+	maxBuildings    int
+	minBuildingSize int
+	maxBuildingSize int
+	buildings       []*SquareRoom
 }
 
 func (town *TownGenerator) Generate() []MapThing {
@@ -42,18 +51,13 @@ func (town *TownGenerator) Generate() []MapThing {
 	return things
 }
 
-func (town *TownGenerator) addBuildingToTown(things []MapThing) []MapThing {
-	room := town.getRoom(3, 10)
-	return append(things, room)
-}
-
-func (town *TownGenerator) getRoom(minSize, maxSize int) *SquareRoom {
-	return &SquareRoom{
+func (town *TownGenerator) addBuilding() {
+	town.buildings = append(town.buildings, &SquareRoom{
 		walls: &geometry.AxisAlignedBoundingBox{
-			Width:  town.random.Int(minSize, maxSize),
-			Height: town.random.Int(minSize, maxSize),
+			Width:  town.random.Int(town.minBuildingSize, town.maxBuildingSize),
+			Height: town.random.Int(town.minBuildingSize, town.maxBuildingSize),
 		},
-	}
+	})
 }
 
 type MapThing interface {
