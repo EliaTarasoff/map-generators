@@ -107,31 +107,31 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 }
 
 func lineTouchLine(a1, a2, b1, b2 int) []int {
-	leftA, rightA := a1, a2
+	smallA, bigA := a1, a2
 	if a2 < a1 {
-		leftA, rightA = a2, a1
+		smallA, bigA = a2, a1
 	}
-	leftB, rightB := b1, b2
+	smallB, bigB := b1, b2
 	if b2 < b1 {
-		leftB, rightB = b2, b1
+		smallB, bigB = b2, b1
 	}
 
 	// totally outside
-	if rightA < leftB || leftA > rightB {
+	if bigA < smallB || smallA > bigB {
 		return nil
 	}
 
 	// total overlap
-	if leftA == leftB && rightA == rightB {
-		return []int{leftA, rightA}
+	if smallA == smallB && bigA == bigB {
+		return []int{smallA, bigA}
 	}
 
-	leftATouchB := pointTouchLine(leftA, leftB, rightB)
-	rightATouchB := pointTouchLine(rightA, leftB, rightB)
-	all := append(leftATouchB, rightATouchB...)
+	smallATouchB := pointTouchLine(smallA, smallB, bigB)
+	bigATouchB := pointTouchLine(bigA, smallB, bigB)
+	all := append(smallATouchB, bigATouchB...)
 	sort.Ints(all)
 
-	// they're *just* touching...
+	// only intersect at one point
 	if all[0] == all[1] {
 		return []int{all[0]}
 	}
