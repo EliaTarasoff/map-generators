@@ -88,20 +88,20 @@ func (town *TownGenerator) putBuildingOnSide(b *SquareRoom, s side) {
 	}
 }
 
-func (town *TownGenerator) putBuildingOnNorthSide(b *SquareRoom) {
-	town.buildings = append(town.buildings, b)
+func (town *TownGenerator) putBuildingOnNorthSide(building *SquareRoom) {
+	town.buildings = append(town.buildings, building)
 }
 
-func (town *TownGenerator) putBuildingOnSouthSide(b *SquareRoom) {
-	town.buildings = append(town.buildings, b)
+func (town *TownGenerator) putBuildingOnSouthSide(building *SquareRoom) {
+	town.buildings = append(town.buildings, building)
 }
 
-func (town *TownGenerator) putBuildingOnEastSide(b *SquareRoom) {
-	town.buildings = append(town.buildings, b)
+func (town *TownGenerator) putBuildingOnEastSide(building *SquareRoom) {
+	town.buildings = append(town.buildings, building)
 }
 
-func (town *TownGenerator) putBuildingOnWestSide(b *SquareRoom) {
-	town.buildings = append(town.buildings, b)
+func (town *TownGenerator) putBuildingOnWestSide(building *SquareRoom) {
+	town.buildings = append(town.buildings, building)
 }
 
 type MapThing interface {
