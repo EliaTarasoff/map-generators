@@ -10,5 +10,5 @@ func main() {
 	random := maps.NewSaneRandomGeneratorNow()
 	townGenerator := maps.NewTownGenerator(random)
 	town := townGenerator.Generate()
-	maps.PrintThings(town)
+	maps.PrintThings("town", town)
 }
