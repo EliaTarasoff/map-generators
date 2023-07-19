@@ -73,35 +73,32 @@ func (town *TownGenerator) addBuilding() {
 	town.buildings = append(town.buildings)
 }
 
-func (town *TownGenerator) putBuildingOnSide(b *SquareRoom, s side) {
+func (town *TownGenerator) putBuildingOnSide(building *SquareRoom, s side) {
 	if s == north {
-		town.putBuildingOnNorthSide(b)
+		town.prepBuildingForNorthSide(building)
 	}
 	if s == south {
-		town.putBuildingOnSouthSide(b)
+		town.prepBuildingForSouthSide(building)
 	}
 	if s == east {
-		town.putBuildingOnEastSide(b)
+		town.prepBuildingForEastSide(building)
 	}
 	if s == west {
-		town.putBuildingOnWestSide(b)
+		town.prepBuildingForWestSide(building)
 	}
-}
-
-func (town *TownGenerator) putBuildingOnNorthSide(building *SquareRoom) {
 	town.buildings = append(town.buildings, building)
 }
 
-func (town *TownGenerator) putBuildingOnSouthSide(building *SquareRoom) {
-	town.buildings = append(town.buildings, building)
+func (town *TownGenerator) prepBuildingForNorthSide(building *SquareRoom) {
 }
 
-func (town *TownGenerator) putBuildingOnEastSide(building *SquareRoom) {
-	town.buildings = append(town.buildings, building)
+func (town *TownGenerator) prepBuildingForSouthSide(building *SquareRoom) {
 }
 
-func (town *TownGenerator) putBuildingOnWestSide(building *SquareRoom) {
-	town.buildings = append(town.buildings, building)
+func (town *TownGenerator) prepBuildingForEastSide(building *SquareRoom) {
+}
+
+func (town *TownGenerator) prepBuildingForWestSide(building *SquareRoom) {
 }
 
 type MapThing interface {
