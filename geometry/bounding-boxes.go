@@ -3,6 +3,7 @@ package geometry
 import (
 	"errors"
 	"math"
+	"sort"
 )
 
 type AxisAlignedBoundingBox struct {
@@ -168,7 +169,9 @@ func lineTouchLine(a1, a2, b1, b2 int) []int {
 	// messy overlaps
 	leftATouchB := pointTouchLine(leftA, leftB, rightB)
 	rightATouchB := pointTouchLine(rightA, leftB, rightB)
-	return append(leftATouchB, rightATouchB...)
+	all := append(leftATouchB, rightATouchB...)
+	sort.Ints(all)
+	return all
 }
 
 func pointTouchLine(a, b1, b2 int) []int {
