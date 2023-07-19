@@ -59,12 +59,49 @@ func (town *TownGenerator) Generate() []MapThing {
 }
 
 func (town *TownGenerator) addBuilding() {
-	town.buildings = append(town.buildings, &SquareRoom{
+	building := &SquareRoom{
 		walls: &geometry.AxisAlignedBoundingBox{
 			Width:  town.random.Int(town.minBuildingSize, town.maxBuildingSize),
 			Height: town.random.Int(town.minBuildingSize, town.maxBuildingSize),
 		},
-	})
+	}
+
+	sideIndex := town.random.Int(0, 3)
+	buildingSide := allSides[sideIndex]
+	town.putBuildingOnSide(building, buildingSide)
+
+	town.buildings = append(town.buildings)
+}
+
+func (town *TownGenerator) putBuildingOnSide(b *SquareRoom, s side) {
+	if s == north {
+		town.putBuildingOnNorthSide(b)
+	}
+	if s == south {
+		town.putBuildingOnSouthSide(b)
+	}
+	if s == east {
+		town.putBuildingOnEastSide(b)
+	}
+	if s == west {
+		town.putBuildingOnWestSide(b)
+	}
+}
+
+func (town *TownGenerator) putBuildingOnNorthSide(b *SquareRoom) {
+	town.buildings = append(town.buildings, b)
+}
+
+func (town *TownGenerator) putBuildingOnSouthSide(b *SquareRoom) {
+	town.buildings = append(town.buildings, b)
+}
+
+func (town *TownGenerator) putBuildingOnEastSide(b *SquareRoom) {
+	town.buildings = append(town.buildings, b)
+}
+
+func (town *TownGenerator) putBuildingOnWestSide(b *SquareRoom) {
+	town.buildings = append(town.buildings, b)
 }
 
 type MapThing interface {
@@ -79,3 +116,14 @@ type SquareRoom struct {
 func (room *SquareRoom) ToString() string {
 	return "TODO"
 }
+
+type side string
+
+const (
+	north side = "north"
+	south side = "south"
+	east  side = "east"
+	west  side = "west"
+)
+
+var allSides = []side{north, south, east, west}
