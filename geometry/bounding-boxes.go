@@ -107,14 +107,8 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 }
 
 func lineTouchLine(a1, a2, b1, b2 int) []int {
-	smallA, bigA := a1, a2
-	if a2 < a1 {
-		smallA, bigA = a2, a1
-	}
-	smallB, bigB := b1, b2
-	if b2 < b1 {
-		smallB, bigB = b2, b1
-	}
+	smallA, bigA := minMax(a1, a2)
+	smallB, bigB := minMax(b1, b2)
 
 	// totally outside
 	if bigA < smallB || smallA > bigB {
@@ -141,10 +135,7 @@ func lineTouchLine(a1, a2, b1, b2 int) []int {
 }
 
 func pointTouchLine(a, b1, b2 int) []int {
-	leftB, rightB := b1, b2
-	if b2 < b1 {
-		leftB, rightB = b2, b1
-	}
+	leftB, rightB := minMax(b1, b2)
 
 	if a < leftB || a > rightB {
 		return nil
@@ -163,22 +154,16 @@ type Point struct {
 	Y int
 }
 
-func min(nums ...int) int {
-	small := math.MaxInt
+func minMax(nums ...int) (min, max int) {
+	min = math.MaxInt
+	max = -(math.MaxInt - 1)
 	for _, num := range nums {
-		if num < small {
-			small = num
+		if num < min {
+			min = num
+		}
+		if num > max {
+			max = num
 		}
 	}
-	return small
-}
-
-func max(nums ...int) int {
-	big := -(math.MaxInt - 1)
-	for _, num := range nums {
-		if num > big {
-			big = num
-		}
-	}
-	return big
+	return min, max
 }
