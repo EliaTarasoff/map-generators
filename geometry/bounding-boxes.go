@@ -2,6 +2,7 @@ package geometry
 
 import (
 	"errors"
+	"math"
 )
 
 type AxisAlignedBoundingBox struct {
@@ -58,12 +59,78 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 		return nil, nil
 	}
 
-	// boxes are equal
+	// totally overlapping (equal) boxes
 	if ((box.TopLeft.X == other.TopLeft.X) && (box.TopLeft.Y == other.TopLeft.Y)) &&
 		((boxBR.X == otherBR.X) && (boxBR.Y == otherBR.Y)) {
 		return []*Point{
 			box.TopLeft,
 			boxBR,
+		}, nil
+	}
+
+	// equal width
+	if (box.TopLeft.X == other.TopLeft.X) && (boxBR.X == otherBR.X) {
+		// overlap one edge
+		if box.TopLeft.Y == otherBR.Y {
+			return , nil
+		}
+		if boxBR.Y == other.TopLeft.Y {
+			return , nil
+		}
+
+		top := math.MaxInt
+		bottom := -(math.MaxInt - 1)
+		all := []int{box.TopLeft.Y, boxBR.Y, other.TopLeft.Y, otherBR.Y}
+		for _, num := range all {
+			if num < top {
+				top = num
+			}
+			if num > bottom {
+				bottom = num
+			}
+		}
+		return []*Point{
+			{
+				X: box.TopLeft.X,
+				Y: top,
+			},
+			{
+				X: boxBR.X,
+				Y: bottom,
+			},
+		}, nil
+	}
+
+	// equal height
+	if (box.TopLeft.Y == other.TopLeft.Y) && (boxBR.Y == otherBR.Y) {
+		// overlap one edge
+		if box.TopLeft.X == otherBR.X {
+			return , nil
+		}
+		if boxBR.X == other.TopLeft.X {
+			return , nil
+		}
+
+		left := math.MaxInt
+		right := -(math.MaxInt - 1)
+		all := []int{box.TopLeft.X, boxBR.X, other.TopLeft.X, otherBR.X}
+		for _, num := range all {
+			if num < left {
+				left = num
+			}
+			if num > right {
+				right = num
+			}
+		}
+		return []*Point{
+			{
+				X: left,
+				Y: box.TopLeft.Y,
+			},
+			{
+				X: right,
+				Y: boxBR.Y,
+			},
 		}, nil
 	}
 
