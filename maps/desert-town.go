@@ -1,9 +1,6 @@
 package maps
 
 import (
-	"log"
-	"sort"
-
 	"map-generators/geometry"
 )
 
@@ -46,7 +43,8 @@ type TownGenerator struct {
 	maxBuildings    int
 	minBuildingSize int
 	maxBuildingSize int
-	buildings       []*SquareRoom
+
+	buildings []*SquareRoom
 }
 
 func (town *TownGenerator) Generate() []MapThing {
@@ -76,69 +74,8 @@ func (town *TownGenerator) addBuilding() {
 	town.buildings = append(town.buildings)
 }
 
-func (town *TownGenerator) putBuildingOnSide(building *SquareRoom, s side) {
-	if building == nil {
-		log.Fatalf("putBuildingOnSide() can't use a null building")
-		return
-	}
-	if !building.walls.SizeIsValid() {
-		log.Fatalf("putBuildingOnSide() building has invalid size")
-		return
-	}
+func (town *TownGenerator) placeBuildingCloseToWater() {
 
-	if s == north {
-		town.prepBuildingForNorthSide(building)
-	}
-	if s == south {
-		town.prepBuildingForSouthSide(building)
-	}
-	if s == east {
-		town.prepBuildingForEastSide(building)
-	}
-	if s == west {
-		town.prepBuildingForWestSide(building)
-	}
-	town.buildings = append(town.buildings, building)
-}
-
-func (town *TownGenerator) prepBuildingForNorthSide(building *SquareRoom) {
-	var widths []int
-	var eastWests []int
-
-	if len(town.buildings) < 1 {
-		return
-	}
-
-	for _, townBuilding := range town.buildings {
-		widths = append(widths, townBuilding.walls.Width)
-		bottomRight, err := townBuilding.walls.BottomRight()
-		if err != nil {
-			log.Fatalf("prepBuildingForNorthSide() failed: %s", err.Error())
-			return
-		}
-		eastWests = append(eastWests, townBuilding.walls.TopLeft.X, bottomRight.X)
-	}
-
-	westest, eastest := geometry.MinMax(eastWests...)
-	westest = westest - building.walls.Width + 1
-	eastest = eastest + building.walls.Width - 1
-
-	sort.Ints(widths)
-	widest := widths[len(widths)-1]
-	if building.walls.Width > widest {
-		mid := (eastest + westest) / 2
-		building.walls.TopLeft.X = mid - (building.walls.Width / 2)
-		return
-	}
-}
-
-func (town *TownGenerator) prepBuildingForSouthSide(building *SquareRoom) {
-}
-
-func (town *TownGenerator) prepBuildingForEastSide(building *SquareRoom) {
-}
-
-func (town *TownGenerator) prepBuildingForWestSide(building *SquareRoom) {
 }
 
 type MapThing interface {
@@ -147,20 +84,22 @@ type MapThing interface {
 
 type SquareRoom struct {
 	walls *geometry.AxisAlignedBoundingBox
-	doors []*geometry.Point
+	doors []geometry.Point
 }
 
 func (room *SquareRoom) ToString() string {
 	return "TODO"
 }
 
-type side string
+type WaterSource interface {
+	DistanceTo(pos geometry.Point) int
+}
 
-const (
-	north side = "north"
-	south side = "south"
-	east  side = "east"
-	west  side = "west"
-)
+type Oasis struct {
+	position *geometry.Point
+	radius   int
+}
 
-var allSides = []side{north, south, east, west}
+func (oasis *Oasis) DistanceTo(pos geometry.Point) int {
+
+}
