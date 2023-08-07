@@ -1,6 +1,9 @@
 package maps
 
 import (
+	"errors"
+	"math"
+
 	"map-generators/geometry"
 )
 
@@ -27,13 +30,18 @@ x x xxxxx
 x-x
 */
 
-func NewTownGenerator(random *SaneRandomGenerator, minBuildings, maxBuildings, minBuildingSize, maxBuildingSize int) *TownGenerator {
+func NewTownGenerator(random *SaneRandomGenerator, minBuildings, maxBuildings, minBuildingSize, maxBuildingSize, oasisSize int) *TownGenerator {
 	return &TownGenerator{
 		random:          random,
 		minBuildings:    minBuildings,
 		maxBuildings:    maxBuildings,
 		minBuildingSize: minBuildingSize,
 		maxBuildingSize: maxBuildingSize,
+
+		waterSource: &Oasis{
+			position: &geometry.Point{},
+			radius:   oasisSize,
+		},
 	}
 }
 
@@ -44,7 +52,8 @@ type TownGenerator struct {
 	minBuildingSize int
 	maxBuildingSize int
 
-	buildings []*SquareRoom
+	buildings   []*SquareRoom
+	waterSource WaterSource
 }
 
 func (town *TownGenerator) Generate() []MapThing {
@@ -67,15 +76,30 @@ func (town *TownGenerator) addBuilding() {
 		},
 	}
 
-	sideIndex := town.random.Int(0, 3)
-	buildingSide := allSides[sideIndex]
-	town.putBuildingOnSide(building, buildingSide)
-
+	town.chooseBuildingType(building)
+	town.buildAroundWater(building)
 	town.buildings = append(town.buildings)
 }
 
-func (town *TownGenerator) placeBuildingCloseToWater() {
+func (town *TownGenerator) chooseBuildingType(building *SquareRoom) {
+	/*
+		TODO
+			house
+			market
+			apartment
+			temple/church
+			graveyard
+	*/
+}
 
+func (town *TownGenerator) buildAroundWater(building *SquareRoom) {
+	building.walls.MoveBottomTo(0)
+	for {
+		if town.waterSource.DistanceTo(building.walls.)
+	}
+
+	// go clockwise, finding shortest distance to water or other buildings
+	// put it there
 }
 
 type MapThing interface {
@@ -92,7 +116,7 @@ func (room *SquareRoom) ToString() string {
 }
 
 type WaterSource interface {
-	DistanceTo(pos geometry.Point) int
+	DistanceTo(pos *geometry.Point) (float64, error)
 }
 
 type Oasis struct {
@@ -100,6 +124,13 @@ type Oasis struct {
 	radius   int
 }
 
-func (oasis *Oasis) DistanceTo(pos geometry.Point) int {
+func (oasis *Oasis) DistanceTo(pos *geometry.Point) (float64, error) {
+	if oasis == nil || oasis.position == nil || pos == nil {
+		return 0, errors.New("can't get distance to nulls")
+	}
 
+	dX := math.Abs(float64(oasis.position.X - pos.X))
+	dY := math.Abs(float64(oasis.position.Y - pos.Y))
+	distanceToCenter := math.Pow((dX*dX)+(dY*dY), 0.5)
+	return distanceToCenter - float64(oasis.radius), nil
 }

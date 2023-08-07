@@ -20,7 +20,37 @@ func (box *AxisAlignedBoundingBox) SizeIsValid() bool {
 	return box.Width > 0 && box.Height > 0
 }
 
+func (box *AxisAlignedBoundingBox) TopRight() (*Point, error) {
+	if box == nil || box.TopLeft == nil {
+		return nil, errors.New("can't compute bottom-right corner on nulls")
+	}
+
+	if !box.SizeIsValid() {
+		return nil, errors.New("can't compute bottom-right with a negative size")
+	}
+
+	return &Point{
+		X: box.TopLeft.X + box.Width,
+		Y: box.TopLeft.Y + box.Height,
+	}, nil
+}
+
 func (box *AxisAlignedBoundingBox) BottomRight() (*Point, error) {
+	if box == nil || box.TopLeft == nil {
+		return nil, errors.New("can't compute bottom-right corner on nulls")
+	}
+
+	if !box.SizeIsValid() {
+		return nil, errors.New("can't compute bottom-right with a negative size")
+	}
+
+	return &Point{
+		X: box.TopLeft.X + box.Width,
+		Y: box.TopLeft.Y + box.Height,
+	}, nil
+}
+
+func (box *AxisAlignedBoundingBox) BottomLeft() (*Point, error) {
 	if box == nil || box.TopLeft == nil {
 		return nil, errors.New("can't compute bottom-right corner on nulls")
 	}
@@ -104,6 +134,16 @@ func (box *AxisAlignedBoundingBox) Intersection(other *AxisAlignedBoundingBox) (
 			Y: yTouches[1],
 		},
 	}, nil
+}
+
+func (box *AxisAlignedBoundingBox) MoveBottomTo(y int) {
+	dY := box.TopLeft.Y - y
+	box.TopLeft.Y += dY
+}
+
+func (box *AxisAlignedBoundingBox) MoveRightTo(x int) {
+	dX := box.TopLeft.X - x
+	box.TopLeft.X += dX
 }
 
 func lineTouchLine(a1, a2, b1, b2 int) []int {
