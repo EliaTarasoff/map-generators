@@ -95,7 +95,9 @@ func (town *TownGenerator) chooseBuildingType(building *SquareRoom) {
 func (town *TownGenerator) buildAroundWater(building *SquareRoom) {
 	building.walls.MoveBottomTo(0)
 	for {
-		if town.waterSource.DistanceTo(building.walls.)
+		if town.waterSource.DistanceTo(building.walls.) {
+
+		}
 	}
 
 	// go clockwise, finding shortest distance to water or other buildings
@@ -116,6 +118,7 @@ func (room *SquareRoom) ToString() string {
 }
 
 type WaterSource interface {
+	Width() int
 	DistanceTo(pos *geometry.Point) (float64, error)
 }
 
@@ -133,4 +136,8 @@ func (oasis *Oasis) DistanceTo(pos *geometry.Point) (float64, error) {
 	dY := math.Abs(float64(oasis.position.Y - pos.Y))
 	distanceToCenter := math.Pow((dX*dX)+(dY*dY), 0.5)
 	return distanceToCenter - float64(oasis.radius), nil
+}
+
+func (oasis *Oasis) Width() int {
+	return oasis.radius * 2
 }
