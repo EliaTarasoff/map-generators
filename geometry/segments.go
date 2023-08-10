@@ -1,6 +1,8 @@
 package geometry
 
-import "sort"
+import (
+	"sort"
+)
 
 type Segment struct {
 	Left   int
@@ -67,12 +69,16 @@ func getHighestSegments(a, b Segment) []Segment {
 		return []Segment{b, a}
 	}
 
+	lower := a
+	higher := b
+	if a.Height > b.Height {
+		lower = b
+		higher = a
+	}
+
 	// total overlap
 	if a.Left == b.Left && a.Right == b.Right {
-		if a.Height > b.Height {
-			return []Segment{a}
-		}
-		return []Segment{b}
+		return []Segment{higher}
 	}
 
 	left := Segment{}
@@ -90,12 +96,6 @@ func getHighestSegments(a, b Segment) []Segment {
 	bounds := Segment{}
 	bounds.Left = left.Left
 	bounds.Right = right.Right
-	lower := a
-	higher := b
-	if a.Height > b.Height {
-		lower = b
-		higher = a
-	}
 
 	// one segment totally inside the other
 	aInside := a.Left > bounds.Left && a.Right < bounds.Right
