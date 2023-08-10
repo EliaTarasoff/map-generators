@@ -77,6 +77,42 @@ func TestGetHighestValueSegments(t *testing.T) {
 		}
 	})
 
+	t.Run("one low segment totally overlaps a small high segment", func(t *testing.T) {
+		ins := []Segment{
+			{
+				Height: 5,
+				Left:   4,
+				Right:  6,
+			},
+			{
+				Height: 3,
+				Left:   0,
+				Right:  10,
+			},
+		}
+		expecteds := []Segment{
+			{
+				Height: 3,
+				Left:   0,
+				Right:  3,
+			},
+			{
+				Height: 5,
+				Left:   4,
+				Right:  6,
+			},
+			{
+				Height: 3,
+				Left:   7,
+				Right:  10,
+			},
+		}
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, expecteds) {
+			failMatch(highs, expecteds, t)
+		}
+	})
+
 	t.Run("three overlapping segments", func(t *testing.T) {
 		ins := []Segment{
 			{

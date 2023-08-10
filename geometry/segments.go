@@ -59,6 +59,7 @@ func CopySlice[K any](in []K) []K {
 }
 
 func getHighestSegments(a, b Segment) []Segment {
+	// no overlap at all
 	if a.Right < b.Left {
 		return []Segment{a, b}
 	}
@@ -66,19 +67,72 @@ func getHighestSegments(a, b Segment) []Segment {
 		return []Segment{b, a}
 	}
 
+	// total overlap
+	if a.Left == b.Left && a.Right == b.Right {
+		if a.Height > b.Height {
+			return []Segment{a}
+		}
+		return []Segment{b}
+	}
+
 	left := Segment{}
 	right := Segment{}
-
 	if a.Left < b.Left {
 		left = copySegment(a)
 	} else {
 		left = copySegment(b)
 	}
-
 	if a.Right > b.Right {
 		right = copySegment(a)
 	} else {
 		right = copySegment(b)
+	}
+	bounds := Segment{}
+	bounds.Left = left.Left
+	bounds.Right = right.Right
+	lower := a
+	higher := b
+	if a.Height > b.Height {
+		lower = b
+		higher = a
+	}
+
+	// one segment totally inside the other
+	aInside := a.Left > bounds.Left && a.Right < bounds.Right
+	bInside := b.Left > bounds.Left && b.Right < bounds.Right
+	outer := Segment{}
+	if aInside {
+		// totally overshadowed
+		if a.Height <= b.Height {
+			return []Segment{b}
+		}
+		outer = b
+	}
+	if bInside {
+		// totally overshadowed
+		if b.Height <= a.Height {
+			return []Segment{b}
+		}
+		outer = a
+	}
+	if aInside || bInside {
+		return []Segment{
+			{
+				Height: lower.Height,
+				Left:   outer.Left,
+				Right:  higher.Left - 1,
+			},
+			{
+				Height: higher.Height,
+				Left:   higher.Left,
+				Right:  higher.Right,
+			},
+			{
+				Height: lower.Height,
+				Left:   higher.Right + 1,
+				Right:  outer.Right,
+			},
+		}
 	}
 
 	if left.Height > right.Height {
