@@ -175,7 +175,7 @@ func getHighestSegments(a, b Segment) []Segment {
 	pickLeftRight := func(a, b Segment) (left Segment, right Segment) {
 		left = a
 		right = b
-		if b.Right == a.Left {
+		if b.Left < a.Left {
 			left = b
 			right = a
 		}
@@ -230,8 +230,7 @@ func getHighestSegments(a, b Segment) []Segment {
 	left, right := pickLeftRight(a, b)
 	if left.Height < right.Height {
 		left.Right = right.Left - 1
-	}
-	if right.Height < left.Height {
+	} else if right.Height < left.Height {
 		right.Left = left.Right + 1
 	}
 	return []Segment{left, right}
