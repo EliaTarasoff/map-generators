@@ -185,7 +185,7 @@ func TestGetHighestValueSegments(t *testing.T) {
 		}
 	})
 
-	t.Run("three overlapping segments", func(t *testing.T) {
+	t.Run("several overlapping segments", func(t *testing.T) {
 		ins := []Segment{
 			{
 				Height: 11,
