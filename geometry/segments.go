@@ -176,6 +176,37 @@ func getHighestSegments(a, b Segment) []Segment {
 
 	// overlapping and share one edge
 	if a.Right == b.Right || b.Left == a.Left {
+		if a.Size() == 1 && b.Height > a.Height {
+			return []Segment{b}
+		}
+		if b.Size() == 1 && a.Height > b.Height {
+			return []Segment{a}
+		}
+		left := a
+		right := b
+		if b.Left < a.Left {
+			left = b
+			right = a
+		}
+
+		if left.Height > right.Height {
+			return []Segment{
+				left,
+				{
+					Height: right.Height,
+					Left:   right.Left + 1,
+					Right:  right.Right,
+				},
+			}
+		}
+		return []Segment{
+			{
+				Height: left.Height,
+				Left:   left.Left,
+				Right:  left.Right - 1,
+			},
+			right,
+		}
 	}
 
 	return nil
