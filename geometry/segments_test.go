@@ -113,6 +113,63 @@ func TestGetHighestValueSegments(t *testing.T) {
 		}
 	})
 
+	t.Run("length-1 segment is under and touching longer segment", func(t *testing.T) {
+		ins := []Segment{
+			{
+				Height: 0,
+				Left:   0,
+				Right:  0,
+			},
+			{
+				Height: 99,
+				Left:   0,
+				Right:  99,
+			},
+		}
+		expecteds := []Segment{
+			{
+				Height: 99,
+				Left:   0,
+				Right:  99,
+			},
+		}
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, expecteds) {
+			failMatch(highs, expecteds, t)
+		}
+	})
+
+	t.Run("length-1 segment is over and touching longer segment", func(t *testing.T) {
+		ins := []Segment{
+			{
+				Height: 99,
+				Left:   0,
+				Right:  0,
+			},
+			{
+				Height: 0,
+				Left:   0,
+				Right:  99,
+			},
+		}
+		expecteds := []Segment{
+			{
+				Height: 99,
+				Left:   0,
+				Right:  0,
+			},
+			{
+				Height: 0,
+				Left:   1,
+				Right:  99,
+			},
+		}
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, expecteds) {
+			failMatch(highs, expecteds, t)
+		}
+	})
+
 	t.Run("three overlapping segments", func(t *testing.T) {
 		ins := []Segment{
 			{

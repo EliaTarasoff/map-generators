@@ -135,6 +135,22 @@ func getHighestSegments(a, b Segment) []Segment {
 		}
 	}
 
+	// just touching an edge
+	if left.Right == right.Left {
+		if left.Height > right.Height {
+			if right.Left == right.Right {
+				return []Segment{left}
+			}
+			right.Left += 1
+		} else {
+			if left.Left == left.Right {
+				return []Segment{right}
+			}
+			left.Right -= 1
+		}
+		return []Segment{left, right}
+	}
+
 	if left.Height > right.Height {
 		right.Left = left.Right + 1
 	} else {
