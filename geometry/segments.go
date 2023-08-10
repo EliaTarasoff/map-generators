@@ -188,13 +188,21 @@ func getHighestSegments(a, b Segment) []Segment {
 				left,
 				*right.Copy().ShrinkLeft(),
 			}
-		} else {
+		} else if right.Height > left.Height {
 			if left.Size() == 1 {
 				return []Segment{right}
 			}
 			return []Segment{
 				*left.Copy().ShrinkRight(),
 				right,
+			}
+		} else {
+			return []Segment{
+				{
+					Left:   left.Left,
+					Right:  right.Right,
+					Height: left.Height,
+				},
 			}
 		}
 	}
