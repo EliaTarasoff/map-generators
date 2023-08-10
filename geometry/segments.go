@@ -9,14 +9,16 @@ type Segment struct {
 }
 
 // GetHighestValueSegments returns an array of segments, sorted from left to right,
-// where the height is the highest of all input segments dor that range.
+// where the height is the highest value from any overlapping segments for that range.
+// (Overlapping portions are removed, and new non-overlapping segments returned.
+// Like a silhouette of a city sky-line - only the highest shadows are in the silhouette.)
 func GetHighestValueSegments(segments []Segment) []Segment {
-	sorted := make([]Segment, len(segments))
+	sortedInputs := make([]Segment, len(segments))
 	for i := range segments {
-		sorted[i] = segments[i]
+		sortedInputs[i] = segments[i]
 	}
-	sort.SliceStable(sorted, func(i, j int) bool {
-		return sorted[i].Left < sorted[j].Left
+	sort.SliceStable(sortedInputs, func(i, j int) bool {
+		return sortedInputs[i].Left < sortedInputs[j].Left
 	})
 
 	var output []Segment
