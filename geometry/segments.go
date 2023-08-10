@@ -13,6 +13,15 @@ type Segment struct {
 // (Overlapping portions are removed, and new non-overlapping segments returned.
 // Like a silhouette of a city sky-line - only the highest shadows are in the silhouette.)
 func GetHighestValueSegments(segments []Segment) []Segment {
+	switch len(segments) {
+	case 0:
+		return nil
+	case 1:
+		return segments
+	case 2:
+		return getHighestSegments(segments[0], segments[1])
+	}
+
 	sortedInputs := make([]Segment, len(segments))
 	for i := range segments {
 		sortedInputs[i] = segments[i]
