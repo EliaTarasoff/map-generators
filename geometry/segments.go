@@ -47,6 +47,7 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 			input = highs[iRight]
 		}
 	}
+	return outputs
 }
 
 func CopySlice[K any](in []K) []K {
