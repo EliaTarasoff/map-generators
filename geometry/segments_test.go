@@ -24,30 +24,30 @@ func TestGetHighestValueSegments(t *testing.T) {
 		}
 		return true
 	}
-	getAndCheck := func(ins, expecteds []Segment, t *testing.T) {
-		highs := GetHighestValueSegments(ins)
-		if !segmentsMatch(highs, expecteds) {
-			failMatch(highs, expecteds, t)
-		}
-	}
 
 	t.Run("zero segments", func(t *testing.T) {
-		getAndCheck(nil, nil, t)
+		highs := GetHighestValueSegments(nil)
+		if !segmentsMatch(highs, nil) {
+			failMatch(highs, nil, t)
+		}
 	})
 
 	t.Run("one segment", func(t *testing.T) {
-		in := []Segment{
+		ins := []Segment{
 			{
 				Height: 1,
 				Left:   2,
 				Right:  3,
 			},
 		}
-		getAndCheck(in, in, t)
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, ins) {
+			failMatch(highs, ins, t)
+		}
 	})
 
 	t.Run("two overlapping segments", func(t *testing.T) {
-		in := []Segment{
+		ins := []Segment{
 			{
 				Height: 7,
 				Left:   5,
@@ -59,7 +59,7 @@ func TestGetHighestValueSegments(t *testing.T) {
 				Right:  8,
 			},
 		}
-		expected := []Segment{
+		expecteds := []Segment{
 			{
 				Height: 3,
 				Left:   0,
@@ -71,11 +71,14 @@ func TestGetHighestValueSegments(t *testing.T) {
 				Right:  10,
 			},
 		}
-		getAndCheck(in, expected, t)
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, expecteds) {
+			failMatch(highs, expecteds, t)
+		}
 	})
 
 	t.Run("three overlapping segments", func(t *testing.T) {
-		in := []Segment{
+		ins := []Segment{
 			{
 				Height: 7,
 				Left:   5,
@@ -92,7 +95,7 @@ func TestGetHighestValueSegments(t *testing.T) {
 				Right:  12,
 			},
 		}
-		expected := []Segment{
+		expecteds := []Segment{
 			{
 				Height: 2,
 				Left:   -1,
@@ -114,6 +117,9 @@ func TestGetHighestValueSegments(t *testing.T) {
 				Right:  12,
 			},
 		}
-		getAndCheck(in, expected, t)
+		highs := GetHighestValueSegments(ins)
+		if !segmentsMatch(highs, expecteds) {
+			failMatch(highs, expecteds, t)
+		}
 	})
 }
