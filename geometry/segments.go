@@ -69,7 +69,8 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 
 	outputs := getHighestSegments(sortedInputs[0], sortedInputs[1])
 	for _, input := range sortedInputs[2:] {
-		uncheckedOutputs := CopySlice(outputs)
+		uncheckedOutputs := make([]Segment, len(outputs))
+		copy(uncheckedOutputs, outputs)
 		for {
 			output := uncheckedOutputs[0]
 			uncheckedOutputs = uncheckedOutputs[1:]
@@ -85,14 +86,6 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 		}
 	}
 	return outputs
-}
-
-func CopySlice[K any](in []K) []K {
-	out := make([]K, len(in))
-	for i := range in {
-		out[i] = in[i]
-	}
-	return out
 }
 
 func getHighestSegments(a, b Segment) []Segment {
