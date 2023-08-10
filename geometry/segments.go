@@ -128,6 +128,12 @@ func getHighestSegments(a, b Segment) []Segment {
 		bounds.Right = b.Right
 	}
 
+	// equal height
+	if a.Height == b.Height {
+		bounds.Height = a.Height
+		return []Segment{bounds}
+	}
+
 	// one segment totally inside the other
 	aInside := a.Left > bounds.Left && a.Right < bounds.Right
 	bInside := b.Left > bounds.Left && b.Right < bounds.Right
@@ -195,14 +201,6 @@ func getHighestSegments(a, b Segment) []Segment {
 			return []Segment{
 				*left.Copy().ShrinkRight(),
 				right,
-			}
-		} else {
-			return []Segment{
-				{
-					Left:   left.Left,
-					Right:  right.Right,
-					Height: left.Height,
-				},
 			}
 		}
 	}
