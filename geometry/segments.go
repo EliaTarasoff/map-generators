@@ -30,8 +30,22 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 		return sortedInputs[i].Left < sortedInputs[j].Left
 	})
 
-	var output []Segment
-	for _, segment := range sorted {
+	outputs := getHighestSegments(sortedInputs[0], sortedInputs[1])
+	for _, input := range sortedInputs[2:] {
+		uncheckedOutputs := CopySlice(outputs)
+		for {
+			output := uncheckedOutputs[0]
+			uncheckedOutputs = uncheckedOutputs[1:]
+
+			highs := getHighestSegments(output, input)
+			iRight := len(highs) - 1
+			outputs = append(outputs, highs[0:iRight]...)
+
+			if len(uncheckedOutputs) < 1 {
+				break
+			}
+			input = highs[iRight]
+		}
 	}
 }
 
