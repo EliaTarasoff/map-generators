@@ -1,14 +1,29 @@
 package geometry
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
 )
 
 func TestGetHighestValueSegments(t *testing.T) {
-	failMatch := func(got, expected []Segment, t *testing.T) {
-		t.Errorf("got %s, expected %s", spew.Sdump(got), spew.Sdump(expected))
+	failMatch := func(got, expecteds []Segment, t *testing.T) {
+		var goodsOrBads []string
+		for i, expected := range expecteds {
+			if i >= len(got) {
+				goodsOrBads = append(goodsOrBads, "missing")
+				continue
+			}
+			strGot := spew.Sdump(got[i])
+			strExpected := spew.Sdump(expected)
+			if strGot == strExpected {
+				goodsOrBads = append(goodsOrBads, "good")
+				continue
+			}
+			goodsOrBads = append(goodsOrBads, strGot)
+		}
+		t.Errorf("mismatch: [%s]", strings.Join(goodsOrBads, ", "))
 	}
 	segmentsMatch := func(ins, expecteds []Segment) bool {
 		if len(ins) != len(expecteds) {
