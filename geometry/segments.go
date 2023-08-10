@@ -10,6 +10,13 @@ type Segment struct {
 	Height int
 }
 
+func (s Segment) Size() int {
+	if s.Right < s.Left || s.Left > s.Right {
+		return -1
+	}
+	return s.Right - s.Left + 1
+}
+
 // GetHighestValueSegments returns an array of segments, sorted from left to right,
 // where the height is the highest value from any overlapping segments for that range.
 // (Overlapping portions are removed, and new non-overlapping segments returned.
@@ -139,11 +146,9 @@ func getHighestSegments(a, b Segment) []Segment {
 			left = b
 			right = a
 		}
-		leftSmall := left.Left == left.Right
-		rightSmall := right.Left == right.Right
 
 		if left.Height > right.Height {
-			if rightSmall {
+			if right.Size() == 1 {
 				return []Segment{left}
 			}
 			return []Segment{
@@ -155,7 +160,7 @@ func getHighestSegments(a, b Segment) []Segment {
 				},
 			}
 		} else {
-			if leftSmall {
+			if left.Size() == 1 {
 				return []Segment{right}
 			}
 			return []Segment{
