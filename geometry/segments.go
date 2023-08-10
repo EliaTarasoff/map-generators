@@ -166,14 +166,19 @@ func getHighestSegments(a, b Segment) []Segment {
 		}
 	}
 
-	// just touching one edge
-	if a.Right == b.Left || a.Left == b.Right {
-		left := a
-		right := b
+	getLeftRight := func(a, b Segment) (left Segment, right Segment) {
+		left = a
+		right = b
 		if b.Right == a.Left {
 			left = b
 			right = a
 		}
+		return
+	}
+
+	// barely overlapping on one edge
+	if a.Right == b.Left || a.Left == b.Right {
+		left, right := getLeftRight(a, b)
 
 		if left.Height > right.Height {
 			if right.Size() == 1 {
@@ -202,12 +207,7 @@ func getHighestSegments(a, b Segment) []Segment {
 		if b.Size() == 1 && a.Height > b.Height {
 			return []Segment{a}
 		}
-		left := a
-		right := b
-		if b.Left < a.Left {
-			left = b
-			right = a
-		}
+		left, right := getLeftRight(a, b)
 
 		if left.Height > right.Height {
 			return []Segment{
