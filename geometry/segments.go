@@ -10,11 +10,39 @@ type Segment struct {
 	Height int
 }
 
-func (s Segment) Size() int {
+func (s *Segment) Copy() *Segment {
+	if s == nil {
+		return nil
+	}
+
+	return &Segment{
+		Left:   s.Left,
+		Right:  s.Right,
+		Height: s.Height,
+	}
+}
+
+func (s *Segment) Size() int {
 	if s.Right < s.Left || s.Left > s.Right {
 		return -1
 	}
 	return s.Right - s.Left + 1
+}
+
+func (s *Segment) ShrinkLeft() *Segment {
+	if s.Size() == 1 {
+		return nil
+	}
+	s.Left += 1
+	return s
+}
+
+func (s *Segment) ShrinkRight() *Segment {
+	if s.Size() == 1 {
+		return nil
+	}
+	s.Right -= 1
+	return s
 }
 
 // GetHighestValueSegments returns an array of segments, sorted from left to right,
@@ -153,22 +181,14 @@ func getHighestSegments(a, b Segment) []Segment {
 			}
 			return []Segment{
 				left,
-				{
-					Height: right.Height,
-					Left:   right.Left + 1,
-					Right:  right.Right,
-				},
+				*right.Copy().ShrinkLeft(),
 			}
 		} else {
 			if left.Size() == 1 {
 				return []Segment{right}
 			}
 			return []Segment{
-				{
-					Height: left.Height,
-					Left:   left.Left,
-					Right:  left.Right - 1,
-				},
+				*left.Copy().ShrinkRight(),
 				right,
 			}
 		}
@@ -192,19 +212,11 @@ func getHighestSegments(a, b Segment) []Segment {
 		if left.Height > right.Height {
 			return []Segment{
 				left,
-				{
-					Height: right.Height,
-					Left:   right.Left + 1,
-					Right:  right.Right,
-				},
+				*right.Copy().ShrinkLeft(),
 			}
 		}
 		return []Segment{
-			{
-				Height: left.Height,
-				Left:   left.Left,
-				Right:  left.Right - 1,
-			},
+			*left.Copy().ShrinkRight(),
 			right,
 		}
 	}
