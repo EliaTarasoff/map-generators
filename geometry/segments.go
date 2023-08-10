@@ -227,5 +227,17 @@ func getHighestSegments(a, b Segment) []Segment {
 		}
 	}
 
-	return nil
+	left, right := getLeftRight(a, b)
+	mid := Segment{
+		Left:  right.Left,
+		Right: left.Right,
+	}
+	if left.Height < right.Height {
+		left.Right -= 1
+		mid.Height = right.Height
+	}
+	if right.Height < left.Height {
+		right.Left += 1
+	}
+	return []Segment{left, mid, right}
 }
