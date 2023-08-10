@@ -8,7 +8,7 @@ import (
 
 func TestGetHighestValueSegments(t *testing.T) {
 	failMatch := func(got, expected []Segment, t *testing.T) {
-		t.Error(spew.Sprintf("got %v, expected %v", got, expected))
+		t.Errorf("got %s, expected %s", spew.Sdump(got), spew.Sdump(expected))
 	}
 	segmentsMatch := func(ins, expecteds []Segment) bool {
 		if len(ins) != len(expecteds) {
