@@ -84,14 +84,14 @@ func getHighestSegments(a, b Segment) []Segment {
 	left := Segment{}
 	right := Segment{}
 	if a.Left < b.Left {
-		left = copySegment(a)
+		left = a
 	} else {
-		left = copySegment(b)
+		left = b
 	}
 	if a.Right > b.Right {
-		right = copySegment(a)
+		right = a
 	} else {
-		right = copySegment(b)
+		right = b
 	}
 	bounds := Segment{}
 	bounds.Left = left.Left
@@ -164,12 +164,4 @@ func getHighestSegments(a, b Segment) []Segment {
 		return []Segment{left}
 	}
 	return []Segment{left, right}
-}
-
-func copySegment(a Segment) Segment {
-	return Segment{
-		Left:   a.Left,
-		Right:  a.Right,
-		Height: a.Height,
-	}
 }
