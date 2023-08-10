@@ -159,7 +159,7 @@ func TestGetHighestValueSegments(t *testing.T) {
 				Right:  0,
 			},
 			{
-				Height: 0,
+				Height: 3,
 				Left:   1,
 				Right:  99,
 			},
