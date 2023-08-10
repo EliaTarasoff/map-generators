@@ -35,6 +35,14 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 	}
 }
 
+func CopySlice[K any](in []K) []K {
+	out := make([]K, len(in))
+	for i := range in {
+		out[i] = in[i]
+	}
+	return out
+}
+
 func getHighestSegments(a, b Segment) []Segment {
 	if a.Right < b.Left {
 		return []Segment{a, b}
