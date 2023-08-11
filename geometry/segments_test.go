@@ -64,26 +64,26 @@ func TestGetHighestValueSegments(t *testing.T) {
 	t.Run("two overlapping segments, out of order", func(t *testing.T) {
 		ins := []Segment{
 			{
-				Height: 7,
-				Left:   5,
-				Right:  10,
+				Height: 9,
+				Left:   1,
+				Right:  3,
 			},
 			{
-				Height: 3,
+				Height: 8,
 				Left:   0,
-				Right:  8,
+				Right:  2,
 			},
 		}
 		expecteds := []Segment{
 			{
-				Height: 3,
+				Height: 8,
 				Left:   0,
-				Right:  4,
+				Right:  0,
 			},
 			{
-				Height: 7,
-				Left:   5,
-				Right:  10,
+				Height: 9,
+				Left:   1,
+				Right:  3,
 			},
 		}
 		highs := GetHighestValueSegments(ins)
