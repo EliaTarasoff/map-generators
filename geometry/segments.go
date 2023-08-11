@@ -60,18 +60,16 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 	}
 
 	numSeg := len(segments)
-	half := (numSeg / 2) + 1
+	half := numSeg / 2
 	left := make([]Segment, half)
 	right := make([]Segment, half)
 
-	addToLeft := true
 	for i, segment := range segments {
-		if addToLeft {
-			left[i] = segment
+		if i < half {
+			left = append(left, segment)
 		} else {
-			right[i] = segment
+			right = append(right, segment)
 		}
-		addToLeft = !addToLeft
 	}
 	unmergedLeft := GetHighestValueSegments(left)
 	unmergedRight := GetHighestValueSegments(right)
