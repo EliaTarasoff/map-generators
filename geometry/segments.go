@@ -125,15 +125,19 @@ func mergeSkylines(leftSkyline, rightSkyline []Segment) []Segment {
 	for _, building := range leftSkyline {
 		for pos := building.Left; pos <= building.Right; pos++ {
 			temp := tempSkylinePoss[posToArray(pos)]
-			temp.valid = true
-			temp.height = building.Height
+			if !temp.valid {
+				temp.height = building.Height
+				temp.valid = true
+			}
 		}
 	}
 	for _, building := range rightSkyline {
 		for pos := building.Left; pos <= building.Right; pos++ {
 			temp := tempSkylinePoss[posToArray(pos)]
-			temp.valid = true
-			temp.height = building.Height
+			if !temp.valid {
+				temp.height = building.Height
+				temp.valid = true
+			}
 		}
 	}
 
