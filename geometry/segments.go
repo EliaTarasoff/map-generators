@@ -71,7 +71,7 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 	for _, input := range sortedInputs[2:] {
 		uncheckedOutputs := make([]Segment, len(outputs))
 		copy(uncheckedOutputs, outputs)
-		for {
+		for len(uncheckedOutputs) > 0 {
 			output := uncheckedOutputs[0]
 			uncheckedOutputs = uncheckedOutputs[1:]
 
@@ -79,9 +79,6 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 			iRight := len(highs) - 1
 			outputs = append(outputs, highs[0:iRight]...)
 
-			if len(uncheckedOutputs) < 1 {
-				break
-			}
 			input = highs[iRight]
 		}
 	}
