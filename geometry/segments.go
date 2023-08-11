@@ -1,7 +1,7 @@
 package geometry
 
 import (
-	"sort"
+	"math"
 )
 
 type Segment struct {
@@ -59,30 +59,104 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 		return getHighestSegments(segments[0], segments[1])
 	}
 
-	sortedInputs := make([]Segment, len(segments))
-	for i := range segments {
-		sortedInputs[i] = segments[i]
+	numSeg := len(segments)
+	half := (numSeg / 2) + 1
+	left := make([]Segment, half)
+	right := make([]Segment, half)
+
+	addToLeft := true
+	for i, segment := range segments {
+		if addToLeft {
+			left[i] = segment
+		} else {
+			right[i] = segment
+		}
+		addToLeft = !addToLeft
 	}
-	sort.SliceStable(sortedInputs, func(i, j int) bool {
-		return sortedInputs[i].Left < sortedInputs[j].Left
-	})
+	unmergedLeft := GetHighestValueSegments(left)
+	unmergedRight := GetHighestValueSegments(right)
+	return mergeSkylines(unmergedLeft, unmergedRight)
+}
 
-	outputs := getHighestSegments(sortedInputs[0], sortedInputs[1])
-	for _, input := range sortedInputs[2:] {
-		uncheckedOutputs := make([]Segment, len(outputs))
-		copy(uncheckedOutputs, outputs)
-		for len(uncheckedOutputs) > 0 {
-			output := uncheckedOutputs[0]
-			uncheckedOutputs = uncheckedOutputs[1:]
+func mergeSkylines(leftSkyline, rightSkyline []Segment) []Segment {
+	numLeft := len(leftSkyline)
+	numRight := len(rightSkyline)
+	if numLeft == 0 && numRight == 0 {
+		return nil
+	}
+	if numLeft == 0 {
+		return rightSkyline
+	}
+	if numRight == 0 {
+		return leftSkyline
+	}
 
-			highs := getHighestSegments(output, input)
-			iRight := len(highs) - 1
-			outputs = append(outputs, highs[0:iRight]...)
-
-			input = highs[iRight]
+	type tempSkylinePos struct {
+		valid  bool
+		pos    int
+		height int
+	}
+	left := math.MaxInt
+	right := math.MinInt
+	for _, building := range leftSkyline {
+		if building.Left < left {
+			left = building.Left
 		}
 	}
-	return outputs
+	for _, building := range rightSkyline {
+		if building.Right < right {
+			right = building.Right
+		}
+	}
+	var tempSkylinePoss []*tempSkylinePos
+	for p := left; p <= right; p++ {
+		tempSkylinePoss = append(tempSkylinePoss, &tempSkylinePos{
+			pos: p,
+		})
+	}
+
+	posToArray := func(pos int) int {
+		return pos - left
+	}
+	for _, building := range leftSkyline {
+		for pos := building.Left; pos <= building.Right; pos++ {
+			temp := tempSkylinePoss[posToArray(pos)]
+			temp.valid = true
+			temp.height = building.Height
+		}
+	}
+	for _, building := range rightSkyline {
+		for pos := building.Left; pos <= building.Right; pos++ {
+			temp := tempSkylinePoss[posToArray(pos)]
+			temp.valid = true
+			temp.height = building.Height
+		}
+	}
+
+	type tempSkylineSegment struct {
+		hasLeft bool
+		seg     Segment
+	}
+	tempSegment := tempSkylineSegment{}
+	tempSkylineSegments := make([]tempSkylineSegment, 0)
+	for _, temp := range tempSkylinePoss {
+		if !tempSegment.hasLeft {
+			tempSegment.seg.Left = temp.pos
+			tempSegment.seg.Height = temp.height
+			tempSegment.hasLeft = true
+		}
+		if temp.valid {
+			tempSegment.seg.Right = temp.pos
+		} else {
+			tempSkylineSegments = append(tempSkylineSegments, tempSegment)
+		}
+	}
+
+	outs := make([]Segment, len(tempSkylineSegments))
+	for i, segment := range tempSkylineSegments {
+		outs[i] = segment.seg
+	}
+	return outs
 }
 
 func getHighestSegments(a, b Segment) []Segment {
