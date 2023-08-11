@@ -61,8 +61,8 @@ func GetHighestValueSegments(segments []Segment) []Segment {
 
 	numSeg := len(segments)
 	half := numSeg / 2
-	left := make([]Segment, half)
-	right := make([]Segment, half)
+	var left []Segment
+	var right []Segment
 
 	for i, segment := range segments {
 		if i < half {
@@ -100,9 +100,15 @@ func mergeSkylines(leftSkyline, rightSkyline []Segment) []Segment {
 		if building.Left < left {
 			left = building.Left
 		}
+		if building.Right > right {
+			right = building.Right
+		}
 	}
 	for _, building := range rightSkyline {
-		if building.Right < right {
+		if building.Left < left {
+			left = building.Left
+		}
+		if building.Right > right {
 			right = building.Right
 		}
 	}
